@@ -1,16 +1,46 @@
 const user = require('../../entity/user');
 const puppeteer = require('puppeteer');
 
-const logar = async (iframe) => {
-  const frame = await iframe.contentFrame();
+const logar = async (page) => {
 
-  await frame.waitForSelector('#username');
-  await frame.type('#username', user.email);
+  page = await page.contentFrame();
+  let button = await page.waitForSelector("a[data-msgid='LOGIN']");
+  button.click();
 
-  await frame.waitForSelector('#password');
-  await frame.type('#password', user.password);
+  //let input = await page.waitForSelector("#username");
+  //await input.click()
+  await new Promise(resolve => setTimeout(resolve, 3000));
+  await page.keyboard.type('natanniel95');
+  await page.keyboard.press('Tab');
+  await page.keyboard.type('Q2aw3@se4');
+  await page.keyboard.press('Enter');
+  await new Promise(resolve => setTimeout(resolve, 5000));
+  await page.goto("https://br.betano.com/casino/live/");
+  await new Promise(resolve => setTimeout(resolve, 5000));
 
-  await frame.click('button[data-msgid="LOGIN"]');
+  button = await page.waitForSelector(".games-list-container .games-list .game-grid article a");
+  await button.click()
+
+  await new Promise(resolve => setTimeout(resolve, 10000));
+ 
+
+  //sidebar-buttons li
+  //console.log(frame)
+  let esperandoRoletas = true
+
+  let iframe = await page.$('iframe');
+  iframe = await iframe.getProperty('src')
+  iframe = await iframe.jsonValue()
+  await page.goto(iframe);
+ 
+  await new Promise(resolve => setTimeout(resolve, 10000));
+  
+  button = await page.$('.sidebar-buttons li')
+  button.click();
+
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  button = await page.$('.main-menu li')
+  button.click();
 }
 
 module.exports = {logar};

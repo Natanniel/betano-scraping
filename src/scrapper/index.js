@@ -1,4 +1,4 @@
-const Roleta = require('./roleta/');
+const Roleta = require('./roleta');
 const playtech = require('./roleta/playtech');
 const evolution = require('./roleta/evolution');
 
@@ -12,9 +12,9 @@ function getEvolutionScrapper(name, url){
   return obj;
 }
 
-function getScrapper(name, url, analyze){
-  const obj = new Roleta(name, url, analyze);
+function getScrapper(){
+  const obj = new Roleta();
   return obj;
 }
 
-module.exports = {getPlaytechScrapper,getEvolutionScrapper};
+module.exports = {getScrapper};
