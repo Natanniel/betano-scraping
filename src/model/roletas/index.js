@@ -5,7 +5,9 @@ const RegistroSchema = new mongoose.Schema({
   nome: String,
   roletas: [{
     nome: String,
-    url :String
+    resultados: [{
+      numero: String
+    }]
   }]
 }, {
   timestamps: {

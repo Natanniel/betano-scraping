@@ -13,6 +13,8 @@ const logar = async (page) => {
   await page.keyboard.type('Q2aw3@se4');
   await page.keyboard.press('Enter');
   await new Promise(resolve => setTimeout(resolve, 5000));
+  
+  
   await page.goto("https://br.betano.com/casino/live/");
   await new Promise(resolve => setTimeout(resolve, 5000));
 

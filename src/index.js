@@ -3,6 +3,7 @@
 const browserInstance = require("./browser");
 const { logar } = require("./controller");
 const connect = require('./database/mongodb');
+const Roletas = require('./model/roletas')
 
 async function main() {
   const browser = await browserInstance();
@@ -11,15 +12,14 @@ async function main() {
   await page.setDefaultNavigationTimeout(0);
   await page.goto('https://br.betano.com/', { delay: 1000 })
 
-  let roletasPlaytech = [];
-  let roletasEvolution = [];
-
   await logar(page)
+
+  let resultados = [];
 
 
   while (true) {
 
-    console.log('teste')
+
     let roletas = await page.$$('.lobby-tables__item')
 
     for (const roleta of roletas) {
@@ -27,19 +27,44 @@ async function main() {
       try {
 
         const nomeRoleta = await roleta.$eval('.lobby-table__footer div', el => el.innerText);
-        console.log(nomeRoleta)
-        resultados = await roleta.$$('.lobby-table__body');
+        const v1 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(1) div', el => el.innerText);
+        const v2 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(2) div', el => el.innerText);
+        const v3 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(3) div', el => el.innerText);
+        const v4 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(4) div', el => el.innerText);
+        const v5 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(5) div', el => el.innerText);
+
+        let encontrado = false;
+
+        for (let i = 0; i < resultados.length; i++)
+          if (resultados[i] == (nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5))
+            encontrado = true
 
 
-        console.log(resultados)
+        if (encontrado == false) {
+
+          for (let i = 0; i < resultados.length; i++)
+            if (resultados[i].split('-')[0] == nomeRoleta)
+              resultados[i] = nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5
+
+          let Roleta = await Roletas.findOne({ 'roletas.nome': nomeRoleta });
+
+          if (Roleta != null) {
+            Roleta.roletas[0].resultados.push({ numero: v1 })
+            await Roleta.save()
+          }
+
+        }
 
 
-      } catch {
 
+
+      } catch (e) {
+        // declarações para manipular quaisquer exceções
+        console.log(e); // passa o objeto de exceção para o manipulador de erro
       }
     }
 
-    await new Promise(resolve => setTimeout(resolve, 60000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
   }
 
