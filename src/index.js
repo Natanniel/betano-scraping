@@ -27,32 +27,43 @@ async function main() {
       try {
 
         const nomeRoleta = await roleta.$eval('.lobby-table__footer div', el => el.innerText);
-        const v1 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(1) div', el => el.innerText);
-        const v2 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(2) div', el => el.innerText);
-        const v3 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(3) div', el => el.innerText);
-        const v4 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(4) div', el => el.innerText);
-        const v5 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(5) div', el => el.innerText);
+        if (nomeRoleta == "Roleta Brasileira") {
+          const v1 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(1) div', el => el.innerText);
+          const v2 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(2) div', el => el.innerText);
+          const v3 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(3) div', el => el.innerText);
+          const v4 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(4) div', el => el.innerText);
+          const v5 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(5) div', el => el.innerText);
 
-        let encontrado = false;
-
-        for (let i = 0; i < resultados.length; i++)
-          if (resultados[i] == (nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5))
-            encontrado = true
-
-
-        if (encontrado == false) {
+          let encontrado = false;
 
           for (let i = 0; i < resultados.length; i++)
-            if (resultados[i].split('-')[0] == nomeRoleta)
-              resultados[i] = nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5
+            if (resultados[i] == (nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5))
+              encontrado = true
 
-          let Roleta = await Roletas.findOne({ 'roletas.nome': nomeRoleta });
+          console.log(nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5)
+          console.log('Vai cadastrar o sinal ' + v1 + '? ' + encontrado)
 
-          if (Roleta != null) {
-            Roleta.roletas[0].resultados.push({ numero: v1 })
-            await Roleta.save()
+          if (encontrado == false) {
+            let existeNoFor = false
+            for (let i = 0; i < resultados.length; i++)
+              if (resultados[i].split('-')[0] == nomeRoleta) {
+                resultados[i] = nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5;
+                existeNoFor = true;
+              }
+
+            if (existeNoFor == false) {
+              resultados.push(nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5)
+            }
+
+
+            let Roleta = await Roletas.findOne({ 'roletas.nome': nomeRoleta });
+
+            if (Roleta != null) {
+              Roleta.roletas[0].resultados.push({ numero: v1 })
+              await Roleta.save()
+            }
+
           }
-
         }
 
 
