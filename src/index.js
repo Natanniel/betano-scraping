@@ -27,46 +27,75 @@ async function main() {
       try {
 
         const nomeRoleta = await roleta.$eval('.lobby-table__footer div', el => el.innerText);
-        if (nomeRoleta == "Roleta Brasileira") {
-          const v1 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(1) div', el => el.innerText);
-          const v2 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(2) div', el => el.innerText);
-          const v3 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(3) div', el => el.innerText);
-          const v4 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(4) div', el => el.innerText);
-          const v5 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(5) div', el => el.innerText);
+        const v1 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(1) div', el => el.innerText);
+        const v2 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(2) div', el => el.innerText);
+        const v3 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(3) div', el => el.innerText);
+        const v4 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(4) div', el => el.innerText);
+        const v5 = await roleta.$eval('.lobby-table__body div:nth-child(5) div:nth-child(5) div', el => el.innerText);
 
-          let encontrado = false;
+        let encontrado = false;
 
+        for (let i = 0; i < resultados.length; i++)
+          if (resultados[i] == (nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5))
+            encontrado = true
+
+        console.log(nomeRoleta)
+
+        if (encontrado == false) {
+          let existeNoFor = false
           for (let i = 0; i < resultados.length; i++)
-            if (resultados[i] == (nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5))
-              encontrado = true
-
-          console.log(nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5)
-          console.log('Vai cadastrar o sinal ' + v1 + '? ' + encontrado)
-
-          if (encontrado == false) {
-            let existeNoFor = false
-            for (let i = 0; i < resultados.length; i++)
-              if (resultados[i].split('-')[0] == nomeRoleta) {
-                resultados[i] = nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5;
-                existeNoFor = true;
-              }
-
-            if (existeNoFor == false) {
-              resultados.push(nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5)
+            if (resultados[i].split('-')[0] == nomeRoleta) {
+              resultados[i] = nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5;
+              existeNoFor = true;
             }
 
+          if (existeNoFor == false) {
+            resultados.push(nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5)
+          }
 
-            let Roleta = await Roletas.findOne({ 'roletas.nome': nomeRoleta });
 
-            if (Roleta != null) {
+          let Roleta = await Roletas.findOne({ 'roletas.nome': nomeRoleta });
+
+          if (Roleta != null) {
+            try {
               Roleta.roletas[0].resultados.push({ numero: v1 })
               await Roleta.save()
+            } catch (e) {
+              // declarações para manipular quaisquer exceções
+              console.log(e); // passa o objeto de exceção para o manipulador de erro
             }
-
           }
+
         }
 
 
+      /*  Roleta Brasileira - 143251813
+          - 26035610
+          - 302416
+        Quantum Roulette Live - 342913435
+          - 26261511
+        Football Roulette - 2413311815
+        Speed Roulette - 19035160
+        American Roulette - 332836325
+        Roulette - 8276357
+        Prestige Roulette - 5249216
+        Spread Bet Roulette - 18111227
+        Quantum Auto Roulette - 32261615
+        UK Roulette - 303353631
+        Deutsches Roulette - 420342513
+        Roulette Italiana - 0228331
+        Hindi Roulette - 3276013
+        Greek Roulette - 23535269
+        Turkish Roulette - 1624191218
+        Football French Roulette - 157273115
+        French Roulette - 8276357
+        Bucharest Roulette - 101232730
+        Bucharest French Roulette - 101232730
+        Greek Quantum Roulette - 19933333
+        Auto Roulette - 163229230
+        Speed Auto Roulette - 12824331
+          - 303192426
+*/
 
 
       } catch (e) {
