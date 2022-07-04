@@ -15,10 +15,37 @@ async function main() {
   await logar(page)
 
   let resultados = [];
-
+  let repeticoes = 0
 
   while (true) {
+    repeticoes = repeticoes + 1;
+   
+    if (repeticoes == 500) {
+      await page.goto("https://br.betano.com/casino/live/");
+      await new Promise(resolve => setTimeout(resolve, 5000));
 
+      let button = await page.waitForSelector(".games-list-container .games-list .game-grid article a");
+      await button.click()
+
+      await new Promise(resolve => setTimeout(resolve, 10000));
+
+      let iframe = await page.$('iframe');
+      iframe = await iframe.getProperty('src')
+      iframe = await iframe.jsonValue()
+      await page.goto(iframe);
+
+      await new Promise(resolve => setTimeout(resolve, 10000));
+
+      button = await page.$('.sidebar-buttons li')
+      await button.click();
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      button = await page.$('.main-menu li')
+      await button.click();
+
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      repeticoes = 0;
+    }
 
     let roletas = await page.$$('.lobby-tables__item')
 
@@ -69,33 +96,33 @@ async function main() {
         }
 
 
-      /*  Roleta Brasileira - 143251813
-          - 26035610
-          - 302416
-        Quantum Roulette Live - 342913435
-          - 26261511
-        Football Roulette - 2413311815
-        Speed Roulette - 19035160
-        American Roulette - 332836325
-        Roulette - 8276357
-        Prestige Roulette - 5249216
-        Spread Bet Roulette - 18111227
-        Quantum Auto Roulette - 32261615
-        UK Roulette - 303353631
-        Deutsches Roulette - 420342513
-        Roulette Italiana - 0228331
-        Hindi Roulette - 3276013
-        Greek Roulette - 23535269
-        Turkish Roulette - 1624191218
-        Football French Roulette - 157273115
-        French Roulette - 8276357
-        Bucharest Roulette - 101232730
-        Bucharest French Roulette - 101232730
-        Greek Quantum Roulette - 19933333
-        Auto Roulette - 163229230
-        Speed Auto Roulette - 12824331
-          - 303192426
-*/
+        /*  Roleta Brasileira - 143251813
+            - 26035610
+            - 302416
+          Quantum Roulette Live - 342913435
+            - 26261511
+          Football Roulette - 2413311815
+          Speed Roulette - 19035160
+          American Roulette - 332836325
+          Roulette - 8276357
+          Prestige Roulette - 5249216
+          Spread Bet Roulette - 18111227
+          Quantum Auto Roulette - 32261615
+          UK Roulette - 303353631
+          Deutsches Roulette - 420342513
+          Roulette Italiana - 0228331
+          Hindi Roulette - 3276013
+          Greek Roulette - 23535269
+          Turkish Roulette - 1624191218
+          Football French Roulette - 157273115
+          French Roulette - 8276357
+          Bucharest Roulette - 101232730
+          Bucharest French Roulette - 101232730
+          Greek Quantum Roulette - 19933333
+          Auto Roulette - 163229230
+          Speed Auto Roulette - 12824331
+            - 303192426
+  */
 
 
       } catch (e) {
@@ -179,3 +206,18 @@ async function scanner(buffer) {
 
 connect();
 main();
+async function teste() {
+  let Roleta = await Roletas.findOne({ 'roletas.nome': 'Roleta Brasileira' });
+
+  if (Roleta != null) {
+    try {
+      Roleta.roletas[0].resultados.push({ numero: 1 })
+      console.log(Roleta.roletas[0].resultados)
+      await Roleta.save()
+    } catch (e) {
+      // declarações para manipular quaisquer exceções
+      console.log(e); // passa o objeto de exceção para o manipulador de erro
+    }
+  }
+}
+//teste();

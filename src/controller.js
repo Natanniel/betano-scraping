@@ -7,7 +7,7 @@ const logar = async (page) => {
 
   //let input = await page.waitForSelector("#username");
   //await input.click()
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise(resolve => setTimeout(resolve, 5000));
   await page.keyboard.type('natanniel95');
   await page.keyboard.press('Tab');
   await page.keyboard.type('Q2aw3@se4');
