@@ -1,6 +1,7 @@
 
 const logar = async (page) => {
 
+  await new Promise(resolve => setTimeout(resolve, 60000));
  // page = await page.contentFrame();
   let button = await page.waitForSelector("a[data-msgid='LOGIN']");
   button.click();
