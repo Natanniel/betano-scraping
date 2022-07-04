@@ -19,7 +19,7 @@ async function main() {
 
   while (true) {
     repeticoes = repeticoes + 1;
-   
+
     if (repeticoes == 500) {
       await page.goto("https://br.betano.com/casino/live/");
       await new Promise(resolve => setTimeout(resolve, 5000));
@@ -81,11 +81,27 @@ async function main() {
           }
 
 
+
+
+
+
+          //  Roleta.roletas[0].resultados.push({ numero: 1 })
+          //  console.log(Roleta.roletas[0].resultados)
+          await Roleta.save()
+
+
           let Roleta = await Roletas.findOne({ 'roletas.nome': nomeRoleta });
 
           if (Roleta != null) {
             try {
-              Roleta.roletas[0].resultados.push({ numero: v1 })
+
+              for (let i = 0; i < Roleta.roletas.length; i++) {
+
+                if (Roleta.roletas[i].nome == nomeRoleta)
+                  Roleta.roletas[i].resultados.push({ numero: v1 })
+
+              }
+
               await Roleta.save()
             } catch (e) {
               // declarações para manipular quaisquer exceções
@@ -207,12 +223,25 @@ async function scanner(buffer) {
 connect();
 main();
 async function teste() {
-  let Roleta = await Roletas.findOne({ 'roletas.nome': 'Roleta Brasileira' });
+  let Roleta = await Roletas.findOne({ 'roletas.nome': 'Roleta italiana' });
 
   if (Roleta != null) {
     try {
-      Roleta.roletas[0].resultados.push({ numero: 1 })
-      console.log(Roleta.roletas[0].resultados)
+
+      for (let i = 0; i < Roleta.roletas.length; i++) {
+
+        if (Roleta.roletas[i].nome == 'Roleta italiana') {
+          Roleta.roletas[i].resultados.push({ numero: "24" })
+        }
+        console.log(Roleta.roletas[i])
+      }
+
+
+
+
+
+      //  Roleta.roletas[0].resultados.push({ numero: 1 })
+      //  console.log(Roleta.roletas[0].resultados)
       await Roleta.save()
     } catch (e) {
       // declarações para manipular quaisquer exceções
