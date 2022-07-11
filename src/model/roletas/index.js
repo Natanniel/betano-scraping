@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const RegistroSchema = new mongoose.Schema({
+let DesenvolvedorSchema = new Schema({
   status: Number,
   nome: String,
   roletas: [{
@@ -9,12 +10,7 @@ const RegistroSchema = new mongoose.Schema({
       numero: String
     }]
   }]
-}, {
-  timestamps: {
-    createdAt: 'timestamp'
-  }
-});
+}, { timestamps: true });
 
-const Registro = mongoose.model('roletas', RegistroSchema);
-
-module.exports = Registro;
+// Export the model
+module.exports = mongoose.model("roletas", DesenvolvedorSchema);

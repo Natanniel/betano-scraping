@@ -17,6 +17,7 @@
     "dotenv": "^16.0.0",
     "mongoose": "^6.3.0",
     "puppeteer": "^13.5.2",
-    "puppeteer-extra": "^3.2.3"
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.11.0"
   }
 }

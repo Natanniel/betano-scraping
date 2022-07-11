@@ -15,40 +15,31 @@ async function main() {
   await logar(page)
 
   let resultados = [];
-  let repeticoes = 0
+  let repeticoes = 49
 
   while (true) {
     repeticoes = repeticoes + 1;
 
-    if (repeticoes == 500) {
-      await page.goto("https://br.betano.com/casino/live/");
+    if (repeticoes == 50) {
+      let button = await page.$('.lobby-category__slide:nth-child(3)')
+      await button.click();
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      let button = await page.waitForSelector(".games-list-container .games-list .game-grid article a");
-      await button.click()
-
-      await new Promise(resolve => setTimeout(resolve, 10000));
-
-      let iframe = await page.$('iframe');
-      iframe = await iframe.getProperty('src')
-      iframe = await iframe.jsonValue()
-      await page.goto(iframe);
-
-      await new Promise(resolve => setTimeout(resolve, 10000));
-
-      button = await page.$('.sidebar-buttons li')
+      button = await page.$('.lobby-category__slide:nth-child(2)')
       await button.click();
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      button = await page.$('.main-menu li')
-      await button.click();
 
       await new Promise(resolve => setTimeout(resolve, 5000));
+
       repeticoes = 0;
     }
+    let roletas = [];
 
-    let roletas = await page.$$('.lobby-tables__item')
-
+    try {
+      roletas = await page.$$('.lobby-tables__item')
+    }catch{
+      console.log("PROBLEMA CRITICO AO PEGAR AS ROLETAS")
+    }
     for (const roleta of roletas) {
 
       try {
@@ -66,8 +57,6 @@ async function main() {
           if (resultados[i] == (nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5))
             encontrado = true
 
-        console.log(nomeRoleta)
-
         if (encontrado == false) {
           let existeNoFor = false
           for (let i = 0; i < resultados.length; i++)
@@ -80,14 +69,6 @@ async function main() {
             resultados.push(nomeRoleta + '-' + v1 + v2 + v3 + v4 + v5)
           }
 
-
-
-
-
-
-          //  Roleta.roletas[0].resultados.push({ numero: 1 })
-          //  console.log(Roleta.roletas[0].resultados)
-          await Roleta.save()
 
 
           let Roleta = await Roletas.findOne({ 'roletas.nome': nomeRoleta });
@@ -107,7 +88,19 @@ async function main() {
               // declarações para manipular quaisquer exceções
               console.log(e); // passa o objeto de exceção para o manipulador de erro
             }
+          } else {
+            if (nomeRoleta.length > 3) {
+              Roleta = await Roletas.findOne({ 'nome': 'Playtech' });
+              Roleta.roletas.push({
+                nome: nomeRoleta,
+                roletas: []
+              })
+              await Roleta.save()
+            }
           }
+
+
+
 
         }
 
@@ -222,31 +215,46 @@ async function scanner(buffer) {
 
 connect();
 main();
+
 async function teste() {
-  let Roleta = await Roletas.findOne({ 'roletas.nome': 'Roleta italiana' });
+
+  //let Rolet = new Roletas({
+  //  status: 1,
+  //  nome: 'Playtech',
+  //})
+
+  //await Rolet.save();
+
+  // console.log("Salvouy")
+
+  let Roleta = await Roletas.findOne({ 'roletas.nome': 'Bucharest Roulette' });
 
   if (Roleta != null) {
     try {
-
-      for (let i = 0; i < Roleta.roletas.length; i++) {
-
-        if (Roleta.roletas[i].nome == 'Roleta italiana') {
-          Roleta.roletas[i].resultados.push({ numero: "24" })
-        }
-        console.log(Roleta.roletas[i])
-      }
-
-
-
-
-
-      //  Roleta.roletas[0].resultados.push({ numero: 1 })
-      //  console.log(Roleta.roletas[0].resultados)
+      Roleta.roletas[0].resultados.push({ numero: 1 })
+      console.log(Roleta.roletas[0].resultados)
       await Roleta.save()
     } catch (e) {
       // declarações para manipular quaisquer exceções
       console.log(e); // passa o objeto de exceção para o manipulador de erro
     }
+  } else {
+
+
+    console.log(Roleta)
+    //  status: Number,
+    // nome: String,
+    // roletas: [{
+    //   nome: String,
+    //  resultados: [{
+    //   numero: String
+    // }]
+    // }]
+    //
+
+    //  Roleta = new Roletas({
+
+    //})
   }
 }
 //teste();
